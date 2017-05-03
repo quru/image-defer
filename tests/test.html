@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>image-defer test page</title>
+    <script type="text/javascript" src="../src/image-defer.js" async defer></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: white;
+            line-height: 1.5;
+        }
+        .toolbox {
+            position: fixed;
+            top: 1em;
+            right: 1em;
+            padding: 1em;
+            background-color: white;
+            border: 1px solid gray;
+        }
+        .toolbox input[type=number] {
+            width: 5em;
+        }
+        .thumbnail {
+            width: 200px;
+            height: 200px;
+            margin: 20px;
+            border: 1px solid #777777;
+        }
+        .defer {
+            background-color: #aaaaaa;
+        }
+        .defer.loading {
+        }
+        .defer.loaded {
+        }
+    </style>
+    <script type="text/javascript">
+        var ImageDefer = ImageDefer || {};
+
+        ImageDefer.options = {
+            onImageLoaded: imageLoad,
+            onImageUnloaded: imageLoad
+        };
+
+        function imageLoad(img) {
+            document.getElementById('loaded-count').innerHTML = this.imagesLoaded();
+        }
+
+        function changeLimit() {
+            ImageDefer.options.maxLoaded = document.getElementById('loaded-limit').value;
+            ImageDefer.trimImages();
+        }
+    </script>
+</head>
+<body>
+    <h1>image-defer test page</h1>
+    <p>
+        This web page contains a lot of images.<br>
+        If you scroll down in your web browser they should load on-demand when you slow or stop the scrolling.
+    </p>
+    <div class="toolbox">
+        Images loaded: <span id="loaded-count">0</span><br>
+        Max images to load <input id="loaded-limit" type="number" min="1" value="100" autocomplete="off"> <input type="button" value="Change" onclick="changeLimit()">
+    </div>
+    <h2>Image section 1</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0&amp;top=0&amp;right=0.3&amp;bottom=0.4486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.1&amp;top=0&amp;right=0.4&amp;bottom=0.4486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.2&amp;top=0&amp;right=0.5&amp;bottom=0.4486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.3&amp;top=0&amp;right=0.6&amp;bottom=0.4486">
+    </p>
+    <h2>Image section 2</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0&amp;top=0.1&amp;right=0.3&amp;bottom=0.5486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.1&amp;top=0.1&amp;right=0.4&amp;bottom=0.5486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.2&amp;top=0.1&amp;right=0.5&amp;bottom=0.5486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.3&amp;top=0.1&amp;right=0.6&amp;bottom=0.5486">
+    </p>
+    <h2>Image section 3</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0&amp;top=0.2&amp;right=0.3&amp;bottom=0.6486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.1&amp;top=0.2&amp;right=0.4&amp;bottom=0.6486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.2&amp;top=0.2&amp;right=0.5&amp;bottom=0.6486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.3&amp;top=0.2&amp;right=0.6&amp;bottom=0.6486">
+    </p>
+    <h2>Image section 4</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0&amp;top=0.3&amp;right=0.3&amp;bottom=0.7486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.1&amp;top=0.3&amp;right=0.4&amp;bottom=0.7486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.2&amp;top=0.3&amp;right=0.5&amp;bottom=0.7486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.3&amp;top=0.3&amp;right=0.6&amp;bottom=0.7486">
+    </p>
+    <h2>Image section 5</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0&amp;top=0.4&amp;right=0.3&amp;bottom=0.8486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.1&amp;top=0.4&amp;right=0.4&amp;bottom=0.8486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.2&amp;top=0.4&amp;right=0.5&amp;bottom=0.8486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.3&amp;top=0.4&amp;right=0.6&amp;bottom=0.8486">
+    </p>
+    <h2>Image section 6</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0&amp;top=0.5&amp;right=0.3&amp;bottom=0.9486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.1&amp;top=0.5&amp;right=0.4&amp;bottom=0.9486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.2&amp;top=0.5&amp;right=0.5&amp;bottom=0.9486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.3&amp;top=0.5&amp;right=0.6&amp;bottom=0.9486">
+    </p>
+    <h2>Image section 7</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.4&amp;top=0&amp;right=0.7&amp;bottom=0.4486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.5&amp;top=0&amp;right=0.8&amp;bottom=0.4486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.6&amp;top=0&amp;right=0.9&amp;bottom=0.4486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.7&amp;top=0&amp;right=1.0&amp;bottom=0.4486">
+    </p>
+    <h2>Image section 8</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.4&amp;top=0.1&amp;right=0.7&amp;bottom=0.5486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.5&amp;top=0.1&amp;right=0.8&amp;bottom=0.5486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.6&amp;top=0.1&amp;right=0.9&amp;bottom=0.5486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.7&amp;top=0.1&amp;right=1.0&amp;bottom=0.5486">
+    </p>
+    <h2>Image section 9</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.4&amp;top=0.2&amp;right=0.7&amp;bottom=0.6486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.5&amp;top=0.2&amp;right=0.8&amp;bottom=0.6486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.6&amp;top=0.2&amp;right=0.9&amp;bottom=0.6486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.7&amp;top=0.2&amp;right=1.0&amp;bottom=0.6486">
+    </p>
+    <h2>Image section 10</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.4&amp;top=0.3&amp;right=0.7&amp;bottom=0.7486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.5&amp;top=0.3&amp;right=0.8&amp;bottom=0.7486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.6&amp;top=0.3&amp;right=0.9&amp;bottom=0.7486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.7&amp;top=0.3&amp;right=1.0&amp;bottom=0.7486">
+    </p>
+    <h2>Image section 11</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.4&amp;top=0.4&amp;right=0.7&amp;bottom=0.8486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.5&amp;top=0.4&amp;right=0.8&amp;bottom=0.8486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.6&amp;top=0.4&amp;right=0.9&amp;bottom=0.8486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.7&amp;top=0.4&amp;right=1.0&amp;bottom=0.8486">
+    </p>
+    <h2>Image section 12</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.4&amp;top=0.5&amp;right=0.7&amp;bottom=0.9486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.5&amp;top=0.5&amp;right=0.8&amp;bottom=0.9486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.6&amp;top=0.5&amp;right=0.9&amp;bottom=0.9486">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;left=0.7&amp;top=0.5&amp;right=1.0&amp;bottom=0.9486">
+    </p>
+    <h2>Image section 13</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=1:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=2:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=3:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=4:25">
+    </p>
+    <h2>Image section 14</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=5:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=6:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=7:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=8:25">
+    </p>
+    <h2>Image section 15</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=9:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=10:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=11:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=12:25">
+    </p>
+    <h2>Image section 16</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=13:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=14:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=15:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=16:25">
+    </p>
+    <h2>Image section 17</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=17:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=18:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=19:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=20:25">
+    </p>
+    <h2>Image section 18</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=21:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=22:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=23:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=24:25">
+    </p>
+    <h2>Image section 19</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=1000&amp;height=1000&amp;left=0.333&amp;tile=25:25">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;angle=90">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;angle=180">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;angle=270">
+    </p>
+    <h2>Image section 20</h2>
+    <p>
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;angle=45">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;angle=135">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;angle=225">
+        <img class="thumbnail defer" src="./deferred.png" data-defer-src="https://images.quru.com/image?src=/test_images/sunrise2.jpg&amp;width=200&amp;height=200&amp;angle=315">
+    </p>    
+</body>
+</html>
