@@ -35,6 +35,8 @@ TODO Explain Y axis only loading - works fine with horizontal carousels, may loa
 
 TODO Describe events - requested event not called when images are swapped in from browser cache - loaded and unloaded should be
 
+TODO Call reset and lazyload if the page layout changes
+
 ### Options
 
 TODO Describe options

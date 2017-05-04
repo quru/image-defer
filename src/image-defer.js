@@ -25,10 +25,11 @@
  */
 
 // TODO Support srcset, picture element?
-// TODO reset needs to be repeatable - should not add duplicate event handlers to images - if images.length, loop on removeImage to unload all
-// TODO implement browser resize event - needs to call reset
 // TODO implement an onerror handler for images?
 // TODO chrome memory profiler shows allocations when scrolling - investigate
+// TODO images initially loaded need a way of specifying the placeholder to unload them
+// TODO when over the limit, call trim once after stopping scrolling
+// TODO should reset always call lazyload?
 
 "use strict";
 
@@ -54,11 +55,13 @@ var ImageDefer = ImageDefer || {};
         images: [],
         maxBucket: 0,
         scrolling: false,
+        resizing: false,
         scrollInfo: {
             last:    { pos: 0, time: 0 },
             current: { pos: 0, time: 0 }
         },
         scrollChecker: null,
+        resizeChecker: null,
         lastVisibleBuckets: {
             start: -1,
             end: -1
@@ -84,6 +87,10 @@ var ImageDefer = ImageDefer || {};
         var vpPos = this.viewportPos(),
             visibleBuckets = this.getBuckets(vpPos.top, vpPos.height),
             bucket;
+
+        // Pause loading while the viewport is resizing
+        if (_state.resizing)
+            return;
 
         if ((visibleBuckets.start !== _state.lastVisibleBuckets.start) ||
             (visibleBuckets.end !== _state.lastVisibleBuckets.end)) {
@@ -140,13 +147,15 @@ var ImageDefer = ImageDefer || {};
             // If the user is scrolling down, unload from the top, else vice versa
             if (_state.scrollInfo.current.pos > _state.scrollInfo.last.pos) {
                 // console.log('Too many images, unloading from the top');
-                for (bucket = 0; (bucket <= _state.maxBucket) && (unloadRequests < unloadTotal); bucket++)
+                for (bucket = 0; (bucket <= _state.maxBucket) && (unloadRequests < unloadTotal); bucket++) {
                     unloadRequests += unloadFn(bucket);
+                }
             }
             else {
                 // console.log('Too many images, unloading from the bottom');
-                for (bucket = _state.maxBucket; (bucket >= 0) && (unloadRequests < unloadTotal); bucket--)
+                for (bucket = _state.maxBucket; (bucket >= 0) && (unloadRequests < unloadTotal); bucket--) {
                     unloadRequests += unloadFn(bucket);
+                }
             }
         }
     }.bind(this);
@@ -249,6 +258,23 @@ var ImageDefer = ImageDefer || {};
         }
     }.bind(this);
 
+    // Handler for viewport resize events
+    this.onResize = function() {
+        _state.resizing = true;
+        // When the page layout has finished changing we need to re-compute
+        // all the buckets and load any newly visible images
+        if (_state.resizeChecker) {
+            clearTimeout(_state.resizeChecker);
+        }
+        _state.resizeChecker = setTimeout(function() {
+            // console.log('The viewport has been resized');
+            _state.resizing = false;
+            _state.resizeChecker = null;
+            this.reset();
+            this.requestCallBack(this.lazyLoadImages);
+        }.bind(this), 500);
+    }.bind(this);
+
     // Detection for when scrolling has stopped
     this.peekScroll = function() {
         var timeNow = Date.now(),
@@ -314,9 +340,12 @@ var ImageDefer = ImageDefer || {};
 
     // Finds all images in the page and sets up lazy loading for each
     this.reset = function() {
+        // console.log('Resetting image list and state');
         _state.imagesLoaded = 0;
         _state.images = [];
         _state.maxBucket = 0;
+        _state.lastVisibleBuckets.start = -1;
+        _state.lastVisibleBuckets.end = -1;
         var images = document.querySelectorAll('img');
         for (var i = 0; i < images.length; i++) {
             this.addImage(images[i]);
@@ -328,10 +357,10 @@ var ImageDefer = ImageDefer || {};
         var deferSrc = element.getAttribute('data-defer-src'),
             initialSrc = element.getAttribute('src'),
             elPos, buckets, bucket;
+
         if (deferSrc) {
             // Add to the images list
             elPos = this.elementPos(element);
-            // console.log('Adding image at ' + elPos.top + ' for ' + deferSrc);
             buckets = this.getBuckets(elPos.top, elPos.height);
             for (bucket = buckets.start; bucket <= buckets.end; bucket++) {
                 if (!_state.images[bucket]) {
@@ -342,13 +371,16 @@ var ImageDefer = ImageDefer || {};
                 }
                 _state.images[bucket].push(element);
             }
-            // Set the initial deferred state
-            element._defer_initial_src = initialSrc;
-            element._defer_final_src = deferSrc;
-            element._defer_state = (this.urlsMatch(initialSrc, deferSrc) ? _imgState.loaded : _imgState.unloaded);
-            // Add to loaded image count (if already loaded)
-            if (element._defer_state === _imgState.loaded)
+            // Set the deferred state of the image (only once, as reset() may be called repeatedly)
+            if (element._defer_state === undefined) {
+                element._defer_initial_src = initialSrc;
+                element._defer_final_src = deferSrc;
+                element._defer_state = this.urlsMatch(initialSrc, deferSrc) ? _imgState.loaded : _imgState.unloaded;
+            }
+            // Add to loaded image count (if loaded or loading)
+            if ((element._defer_state === _imgState.loaded) || (element._defer_state === _imgState.loading))
                 _state.imagesLoaded++;
+            // console.log('Added image for ' + deferSrc + ' at ' + elPos.top + ', state ' + element._defer_state);
             return true;
         }
         return false;
@@ -359,10 +391,10 @@ var ImageDefer = ImageDefer || {};
         var deferSrc = element._defer_final_src,
             currState = element._defer_state,
             elPos, elIdx, buckets, bucket;
+
         if (deferSrc) {
             // Remove from the images list
             elPos = this.elementPos(element);
-            // console.log('Removing image at ' + elPos.top + ' for ' + deferSrc);
             buckets = this.getBuckets(elPos.top, elPos.height);
             for (bucket = buckets.start; bucket <= buckets.end; bucket++) {
                 if (_state.images[bucket]) {
@@ -379,12 +411,12 @@ var ImageDefer = ImageDefer || {};
             delete element._defer_initial_src;
             delete element._defer_final_src;
             delete element._defer_state;
-            // Remove from loaded image count (if loaded)
-            if (currState && (currState !== _imgState.unloading))
-                _state.imagesLoaded--;            
-            // Load the final src if requested
-            if (load && (!currState || currState === _imgState.unloading))
+            // Remove from loaded image count (if loaded or loading)
+            if ((currState === _imgState.loaded) || (currState === _imgState.loading))
+                _state.imagesLoaded--;
+            else if (load)  // Load the final src if requested
                 element.setAttribute('src', deferSrc);
+            // console.log('Removed image for ' + deferSrc + ' at ' + elPos.top + ', state ' + currState);
         }
     }.bind(this);
 
@@ -402,8 +434,10 @@ var ImageDefer = ImageDefer || {};
 
     // Initialises the library for the current web page
     this.init = function() {
-        document.addEventListener('scroll', this.onScroll);
         this.reset();
+        window.addEventListener('resize', this.onResize);
+        window.addEventListener('orientationchange', this.onResize);
+        document.addEventListener('scroll', this.onScroll);
         this.requestCallBack(this.lazyLoadImages);
     }.bind(this);
 
