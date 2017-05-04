@@ -329,7 +329,7 @@ var ImageDefer = ImageDefer || {};
             initialSrc = element.getAttribute('src'),
             elPos, buckets, bucket;
         if (deferSrc) {
-            // Add to images list
+            // Add to the images list
             elPos = this.elementPos(element);
             // console.log('Adding image at ' + elPos.top + ' for ' + deferSrc);
             buckets = this.getBuckets(elPos.top, elPos.height);
@@ -345,7 +345,8 @@ var ImageDefer = ImageDefer || {};
             // Set the initial deferred state
             element._defer_initial_src = initialSrc;
             element._defer_final_src = deferSrc;
-            element._defer_state = (initialSrc === deferSrc ? _imgState.loaded : _imgState.unloaded);
+            element._defer_state = (this.urlsMatch(initialSrc, deferSrc) ? _imgState.loaded : _imgState.unloaded);
+            // Add to loaded image count (if already loaded)
             if (element._defer_state === _imgState.loaded)
                 _state.imagesLoaded++;
             return true;
@@ -353,11 +354,38 @@ var ImageDefer = ImageDefer || {};
         return false;
     }.bind(this);
 
-    // Removes an image from image-defer control
-    this.removeImage = function(element) {
-        // TODO remove event handlers
-        // TODO remove from imagesloaded count if flag>0<3
-        // TODO remove from _state.images - get buckets to remove from
+    // Removes an image from image-defer control, optionally loading it now (applying the data-defer-src attribute)
+    this.removeImage = function(element, load) {
+        var deferSrc = element._defer_final_src,
+            currState = element._defer_state,
+            elPos, elIdx, buckets, bucket;
+        if (deferSrc) {
+            // Remove from the images list
+            elPos = this.elementPos(element);
+            // console.log('Removing image at ' + elPos.top + ' for ' + deferSrc);
+            buckets = this.getBuckets(elPos.top, elPos.height);
+            for (bucket = buckets.start; bucket <= buckets.end; bucket++) {
+                if (_state.images[bucket]) {
+                    elIdx = _state.images[bucket].indexOf(element);
+                    if (elIdx !== -1)
+                        _state.images[bucket].splice(elIdx, 1);
+                }
+            }
+            // Remove event handlers
+            if (element._defer_load_event)
+                element.removeEventListener('load', element._defer_load_event);
+            // Remove custom attrs
+            delete element._defer_load_event;
+            delete element._defer_initial_src;
+            delete element._defer_final_src;
+            delete element._defer_state;
+            // Remove from loaded image count (if loaded)
+            if (currState && (currState !== _imgState.unloading))
+                _state.imagesLoaded--;            
+            // Load the final src if requested
+            if (load && (!currState || currState === _imgState.unloading))
+                element.setAttribute('src', deferSrc);
+        }
     }.bind(this);
 
     // Returns the number of images that are currently loaded and displayed
