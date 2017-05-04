@@ -28,7 +28,6 @@
 // TODO reset needs to be repeatable - should not add duplicate event handlers to images - if images.length, loop on removeImage to unload all
 // TODO implement browser resize event - needs to call reset
 // TODO implement an onerror handler for images?
-// TODO trim needs to be a setTimeout with trimChecker so it only runs once in a while
 // TODO chrome memory profiler shows allocations when scrolling - investigate
 
 "use strict";
@@ -228,6 +227,7 @@ var ImageDefer = ImageDefer || {};
         var timeNow = Date.now();
         if (_state.scrolling && (_state.scrollInfo.current.time === timeNow))
             return;
+
         // Track scrolling
         _state.scrolling = true;
         _state.scrollInfo.last.pos = _state.scrollInfo.current.pos;    // Avoid object creation during

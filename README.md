@@ -43,7 +43,7 @@ TODO Limit may be exceeded - briefly when loading - or permanently if more image
 
 TODO Explain async/defer behaviour, or if js at the end
 
-### Browser support
+### Browser support
 
 Based on [MDN](https://developer.mozilla.org/)'s browser support tables,
 the library should in theory support these browsers (or newer):
