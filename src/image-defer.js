@@ -29,7 +29,6 @@
 // TODO chrome memory profiler shows allocations when scrolling - investigate
 // TODO images initially loaded need a way of specifying the placeholder to unload them
 // TODO when over the limit, call trim once after stopping scrolling
-// TODO should reset always call lazyload?
 
 "use strict";
 
@@ -271,7 +270,6 @@ var ImageDefer = ImageDefer || {};
             _state.resizing = false;
             _state.resizeChecker = null;
             this.reset();
-            this.requestCallBack(this.lazyLoadImages);
         }.bind(this), 500);
     }.bind(this);
 
@@ -338,7 +336,8 @@ var ImageDefer = ImageDefer || {};
         return this._aEl1.href === this._aEl2.href;
     }.bind(this);
 
-    // Finds all images in the page and sets up lazy loading for each
+    // Finds and sets up lazy loading for all images in the page, and loads the currently visible images
+    // This function needs to be called whenever the page layout (vertical positions) changes
     this.reset = function() {
         // console.log('Resetting image list and state');
         _state.imagesLoaded = 0;
@@ -346,10 +345,13 @@ var ImageDefer = ImageDefer || {};
         _state.maxBucket = 0;
         _state.lastVisibleBuckets.start = -1;
         _state.lastVisibleBuckets.end = -1;
+        // Set up all images
         var images = document.querySelectorAll('img');
         for (var i = 0; i < images.length; i++) {
             this.addImage(images[i]);
         }
+        // Load the images that are visible now
+        this.requestCallBack(this.lazyLoadImages);
     }.bind(this);
 
     // Adds an image to be controlled by image-defer (no effect if the image has no data-defer-src attribute)
@@ -434,11 +436,10 @@ var ImageDefer = ImageDefer || {};
 
     // Initialises the library for the current web page
     this.init = function() {
-        this.reset();
         window.addEventListener('resize', this.onResize);
         window.addEventListener('orientationchange', this.onResize);
         document.addEventListener('scroll', this.onScroll);
-        this.requestCallBack(this.lazyLoadImages);
+        this.reset();
     }.bind(this);
 
 }).call(ImageDefer, ImageDefer.options || {});

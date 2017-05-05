@@ -7,13 +7,14 @@ Lazily loading images has these up-sides:
 * Reduced server load, server bandwidth, and client-side bandwidth, by not loading images that the user never sees
 * Flatter server load, by not requesting all images at once
 * Faster loading web pages
-* Reduced client-side memory usage
+* Reduced (and also capped) client-side memory usage
 
 and these down-sides:
 
 * Requires a little extra CPU power when the user scrolls the web page
 * The user may have to wait a short time for images to load when they come into view
 * You need to define your image sizes in advance (to create place-holders so that the page does not jump around as images load)
+* The user needs to have JavaScript enabled to view the images
 
 This library was developed for, and is bundled with, the [Quru Image Server](https://github.com/quru/qis), but functions perfectly well on its own, for use with either static or dynamic images.
 
@@ -35,7 +36,7 @@ TODO Explain Y axis only loading - works fine with horizontal carousels, may loa
 
 TODO Describe events - requested event not called when images are swapped in from browser cache - loaded and unloaded should be
 
-TODO Call reset and lazyload if the page layout changes
+TODO Call reset if the page layout changes
 
 ### Options
 
