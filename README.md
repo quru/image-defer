@@ -22,17 +22,19 @@ Unlike some other "modern" lazy loading libraries, this one does not require bab
 
 ### Live demo
 
-TODO Publish the test page on github.io
+You can try out image-defer on the live demo page at [https://quru.github.io/image-defer/](https://quru.github.io/image-defer/).
 
-TODO Reload should be smooth using browser cache
+View the source if you want to see the plumbing, and clear your browser cache before refreshing the page if you want the images to load again remotely rather than coming from the local browser cache.
 
-The placeholder and loading icons are modified from the Essential Collection pack, by _madebyoliver_ at [flaticon.com](http://flaticon.com/).
+_Acknowledgements_: the placeholder and loading icons are modified from the Essential Collection pack, by _madebyoliver_ at [flaticon.com](http://flaticon.com/).
 
 ### Running
 
 TODO include script, can be async or defer
 
 TODO Define fixed image sizes in css, data-defer-src in html
+
+TODO If using limits, set caching headers on images so that they are reloaded from local cache
 
 TODO Explain Y axis only loading - works fine with horizontal carousels, may load off-screen images on mobile but horizontal scrolling on mobile is bad for usability anyway.
 
@@ -59,3 +61,5 @@ the library should in theory support these browsers (or newer):
 * Firefox 4
 * Chrome 7
 * Safari 5.1
+
+You can use the live demo page to see if it works for a particular browser.

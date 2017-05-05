@@ -10,6 +10,9 @@
             background-color: white;
             line-height: 1.5;
         }
+        .intro {
+            margin-right: 33%;
+        }
         .toolbox {
             position: fixed;
             top: 1em;
@@ -39,7 +42,12 @@
         }
     </style>
 
-    <script type="text/javascript" src="../src/image-defer.js" defer></script>
+    <!-- Include for local development -->
+    <!-- <script type="text/javascript" src="../src/image-defer.js" defer></script> -->
+
+    <!-- Include for GitHub Pages deployment -->
+    <script type="text/javascript" src="https://rawgit.com/quru/image-defer/master/src/image-defer.js" defer></script>
+
     <script type="text/javascript">
         var ImageDefer = ImageDefer || {};  // Only required when using async or defer
 
@@ -58,22 +66,25 @@
         function imageLoaded(img) {
             removeClass(img, 'loading');
             addClass(img, 'loaded');
-            updateLoadedCount();
         }
         function imageUnloaded(img) {
             removeClass(img, 'loading');
             removeClass(img, 'loaded');
-            updateLoadedCount();
         }
 
         // Test page helpers
         function updateLoadedCount() {
-            document.getElementById('loaded-count').innerHTML = ImageDefer.imagesLoaded();
+            var countEl = document.getElementById('loaded-count'),
+                pageLoaded = (countEl && ImageDefer && ImageDefer.version);
+            if (pageLoaded) {
+                countEl.innerHTML = ImageDefer.imagesLoaded();
+            }
         }
         function changeLimit() {
             ImageDefer.options.maxLoaded = document.getElementById('loaded-limit').value;
             ImageDefer.trimImages();
         }
+        setInterval(updateLoadedCount, 500);
 
         // IE9 compatible helpers from http://youmightnotneedjquery.com/
         function addClass(el, className) {
@@ -86,13 +97,23 @@
 </head>
 <body>
     <h1>image-defer demo/test page</h1>
-    <p>
-        This web page contains 160 unique images.<br>
-        If you scroll down in your web browser they should load on-demand when you slow or stop the scrolling.
-    </p>
+    <div class="intro">
+        <ul>
+            <li>This page contains 160 unique images.</li>
+            <li>If you scroll down in your web browser they should load on-demand when you scroll slowly or stop scrolling.
+                Image loading should be skipped while you are scrolling quickly.</li>
+            <li>When the image limit is reached, images that are off-screen should start reverting back to their initial
+                placeholder, from the top if you are scrolling down, or from the bottom if you are scrolling up.</li>
+            <li>If you resize the window (or rotate your device) so that the page layout and scroll position changes,
+                any newly visible images should load, and the limit should be re-evaluated.</li>
+            <li>If the number of visible* images exceeds the limit, the limit will be exceeded.</li>
+        </ul>
+        * image visibility is approximate and is not intended to be pixel-perfect.
+    </div>
     <div class="toolbox">
         Images loaded: <span id="loaded-count">0</span><br>
-        Max images to load <input id="loaded-limit" type="number" min="1" value="100" autocomplete="off"> <input type="button" value="Change" onclick="changeLimit()">
+        Max images to load <input id="loaded-limit" type="number" min="1" value="100" autocomplete="off">
+                           <input type="button" value="Change" onclick="changeLimit()">
     </div>
     <h2>Image section 1</h2>
     <p>
