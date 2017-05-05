@@ -13,14 +13,14 @@ and these down-sides:
 
 * Requires a little extra CPU power when the user scrolls the web page
 * The user may have to wait a short time for images to load when they come into view
-* You need to define your image sizes in advance (to create place-holders so that the page does not jump around as images load)
+* You need to know your image sizes in advance (use fixed sizes so that the page does not jump around as images load)
 * The user needs to have JavaScript enabled to view the images
 
 This library was developed for, and is bundled with, the [Quru Image Server](https://github.com/quru/qis), but functions perfectly well on its own, for use with either static or dynamic images.
 
 Unlike some other "modern" lazy loading libraries, this one does not require babel, webpack, rollup, npm, node, grunt, gulp, or any of that business.
 
-### Live demo
+## Live demo
 
 You can try out image-defer on the live demo page at [https://quru.github.io/image-defer/](https://quru.github.io/image-defer/).
 
@@ -28,31 +28,127 @@ View the source if you want to see the plumbing, and clear your browser cache be
 
 _Acknowledgements_: the placeholder and loading icons are modified from the Essential Collection pack, by _madebyoliver_ at [flaticon.com](http://flaticon.com/).
 
+## How to use
+
+### Adding the script
+
+First include the image-defer script in your web page HTML:
+
+    <script type="text/javascript" src="//your.server/path/to/image-defer.min.js" defer></script>
+
+The script has no dependencies so you can use the `async` script tag attribute if you wish.
+It does not run until the DOM is complete, so you can also use the `defer` script tag attribute
+(unrelated to image-defer), as in the example above. See
+[MDN](https://developer.mozilla.org/en/docs/Web/HTML/Element/script) for more information about
+these options.
+
+The library creates a single global object called `ImageDefer`, so it should be safe to use
+alongside or to combine with any other JavaScript library that does not try to create the same.
+
+### Defining the images
+
+In your HTML, define images using the normal `img` tag, but have the initial `src` attribute point
+to a common placeholder image, and define a new `data-defer-src` attribute to contain the proper
+image URL:
+
+    <img src="placeholder.jpg" data-defer-src="//your.server/path/to/final-image.jpg">
+
+Any images that do not have a `data-defer-src` attribute will simply be ignored by image-defer.
+
+The placeholder image should be the same for all your lazily loaded images, so that the browser
+only loads one copy to display in all of them.
+
+You need to use CSS, or `width` and `height` attributes, to define fixed sizes for all the lazy
+images. This is so that the browser reserves the correct space for them ahead of time. Failure
+to do this causes 2 problems:
+
+1) A really bad user experience, as the browser has to layout the web page again every time
+   an image arrives, causing everything to jump around  
+2) Image-defer, which previously recorded the locations of all the images, will not know that
+   they have moved, and will start to lazy load from the wrong positions
+
+If you don't care about (1) and you want to fix (2) then you can call `ImageDefer.reset()`
+once the new page layout has completed.
+
+For an example of CSS that defines a reusable placeholder independent of the image size,
+see the source of the [demo page](docs/index.html). The placeholder is created with the
+`spacer.png` file and the `defer` CSS class, and works for any image size. The `thumbnail`
+CSS class defines the final image size, so you could easily define different classes for
+different image sizes.
+
 ### Running
 
-TODO include script, can be async or defer
+The library initialises and runs itself as soon as the web page has loaded. If it works and you
+are happy with the defaults then there is nothing else to do, but if not then read on.
 
-TODO Define fixed image sizes in css, data-defer-src in html
+In order to remain fast even for very large web pages, the library breaks down the web page into
+horizontal bands, and then deals only with the currently visible bands. What this means in
+practice is that image-defer only supports lazy loading together with vertical scrolling. This
+covers most use cases. If your page scrolls horizontally, then images will be loaded regardless
+of whether they are visible or horizontally off the page. This should be compatible with most
+sideways-animating image slider (carousel) controls. This design is also why you might notice
+horizontal groups of images loading and unloading together.
 
-TODO If using limits, set caching headers on images so that they are reloaded from local cache
+The library detects and handles window resizing and orientation changes (on mobile) automatically.
+If the page layout changes dynamically in another way, you might need to tell image-defer to update
+its record of those horizontal bands and what is in them. To do this, call `ImageDefer.reset()`
+whenever the page layout has changed (vertically).
 
-TODO Explain Y axis only loading - works fine with horizontal carousels, may load off-screen images on mobile but horizontal scrolling on mobile is bad for usability anyway.
+If you add or remove an image dynamically at runtime, you can tell image-defer to lazy load it,
+or stop lazy loading it, with the `ImageDefer.addImage()` and `ImageDefer.removeImage()` functions
+(see _Available functions_ below). In fact you must call `removeImage` before deleting an image
+if you want it to be garbage collected, otherwise image-defer's reference to it will cause it to
+be kept in memory.
+
+If you have a very large number of images on your page and will be using the limit feature
+(i.e. having more images than `ImageDefer.options.maxLoaded`), ensure that the HTTP caching
+headers on your image server are set to encourage client-side caching. If the user scrolls
+from the bottom of the page back up to the top, you want the unloaded images to be lazily
+loaded back in again from the browser's cache rather than being re-fetched from the server. 
+That said, the correct setting of your HTTP caching headers is important for every scenario.
+
+### Runtime events
 
 TODO Describe events - requested event not called when images are swapped in from browser cache - loaded and unloaded should be
 
-TODO Call reset if the page layout changes
+For an example of how to capture and respond to these events, see the source of the [demo page](docs/index.html).
 
-TODO Describe image strips
+### Available functions
 
-### Options
+Image-defer is intended to be fully automatic in the majority of cases, but there might be times when you
+need to customise the behaviour.
 
-TODO Describe options
+TODO Describe functions
 
-TODO Limit may be exceeded - briefly when loading a new strip - or permanently if more images are visible than the limit
+### Available options
 
-TODO Explain options definition if async
+You can define any or all of the following attributes in `ImageDefer.options`:
 
-### Browser support
+* `maxLoaded` (default 100) - the maximum number of images to lazy load before starting to unload images again.
+  This prevents the memory use of the web page from becoming too high. Images will only be unloaded when they
+  are off-screen; if the number of visible images exceeds the limit then the limit will be breached.
+* `onImageRequested` (default none) - a callback function for the _image requested_ event, see _Events_ above.
+* `onImageLoaded` (default none) - a callback function for the _image loaded_ event, see _Events_ above.
+* `onImageUnloaded` (default none) - a callback function for the _image unloaded_ event, see _Events_ above.
+* `scrollingStopMillis` (default 500) - the time to wait, in milliseconds, before considering that a scrolling
+  event has completed. Images are lazy loaded when scrolling stops.
+* `scrollingSkipRate` (default 1.0) - the speed of scrolling, in pixels/millisecond, above which images will
+  not be lazy loaded. Reducing this value, e.g. to `0.5`, means that lazy loading will not take place while
+  the user is scrolling relatively slowly. Raising it, e.g. to `2.0`, means that images will be lazy loaded
+  even while the user is scrolling quickly.
+
+It does not matter whether you define `ImageDefer.options` before or after including `image-defer.js` in the
+page. But if you define it before, or if you use the `defer` or `async` attributes in your `script` tag, then
+you require an additional line of code to ensure that the `ImageDefer` object exists first:
+
+    var ImageDefer = ImageDefer || {};  // This line is required if image-defer.js might not yet be loaded
+    
+    ImageDefer.options = {
+        maxLoaded: 50,
+        scrollingSkipRate: 0.5
+    };
+
+## Browser support
 
 Based on [MDN](https://developer.mozilla.org/)'s browser support tables,
 the library should in theory support these browsers (or newer):
