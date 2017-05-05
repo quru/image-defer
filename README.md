@@ -1,6 +1,6 @@
 # image-defer.js
 
-image-defer is a simple, dependency-free JavaScript library for lazily loading images on a web page. In a nutshell, images that you choose to defer are not loaded until the user can see them, while images that remain "off the page" are never loaded.
+image-defer is a simple, fast, dependency-free JavaScript library for lazily loading images on a web page. In a nutshell, images that you choose to defer are not loaded until the user can see them, while images that remain "off the page" are never loaded.
 
 Lazily loading images has these up-sides:
 
@@ -26,7 +26,7 @@ TODO Publish the test page on github.io
 
 TODO Reload should be smooth using browser cache
 
-TODO Ack the icons - The loading icons are modified from the Essential Collection pack, by madebyoliver at www.flaticon.com.
+The placeholder and loading icons are modified from the Essential Collection pack, by _madebyoliver_ at [flaticon.com](http://flaticon.com/).
 
 ### Running
 
