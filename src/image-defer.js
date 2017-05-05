@@ -43,7 +43,7 @@ var ImageDefer = ImageDefer || {};
         onImageLoaded: options.onImageLoaded || null,
         onImageUnloaded: options.onImageUnloaded || null,
         scrollingStopMillis: options.scrollingStopMillis || 500,
-        scrollingSkipRate: 2
+        scrollingSkipRate: 1.0
     };
 
     // Private internal state
