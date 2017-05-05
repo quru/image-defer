@@ -38,11 +38,13 @@ TODO Describe events - requested event not called when images are swapped in fro
 
 TODO Call reset if the page layout changes
 
+TODO Describe image strips
+
 ### Options
 
 TODO Describe options
 
-TODO Limit may be exceeded - briefly when loading - or permanently if more images are visible than the limit
+TODO Limit may be exceeded - briefly when loading a new strip - or permanently if more images are visible than the limit
 
 TODO Explain async/defer behaviour, or if js at the end
 

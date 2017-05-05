@@ -28,7 +28,6 @@
 // TODO implement an onerror handler for images?
 // TODO chrome memory profiler shows allocations when scrolling - investigate
 // TODO images initially loaded need a way of specifying the placeholder to unload them
-// TODO when over the limit, call trim once after stopping scrolling
 
 "use strict";
 
@@ -285,6 +284,8 @@ var ImageDefer = ImageDefer || {};
             _state.scrollChecker = null;
             // console.log('Scrolling stopped, images currently loaded ' + _state.imagesLoaded);
             this.requestCallBack(this.lazyLoadImages);
+            if (_state.imagesLoaded > this.options.maxLoaded)
+                this.requestCallBack(this.trimImages);
         }
         else {
             // Check again in a while
