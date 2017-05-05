@@ -25,7 +25,6 @@
  */
 
 // TODO Support srcset, picture element?
-// TODO implement an onerror handler for images?
 // TODO chrome memory profiler shows allocations when scrolling - investigate
 // TODO images initially loaded need a way of specifying the placeholder to unload them
 

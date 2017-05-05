@@ -30,6 +30,8 @@ TODO Ack the icons - The loading icons are modified from the Essential Collectio
 
 ### Running
 
+TODO include script, can be async or defer
+
 TODO Define fixed image sizes in css, data-defer-src in html
 
 TODO Explain Y axis only loading - works fine with horizontal carousels, may load off-screen images on mobile but horizontal scrolling on mobile is bad for usability anyway.
@@ -46,7 +48,7 @@ TODO Describe options
 
 TODO Limit may be exceeded - briefly when loading a new strip - or permanently if more images are visible than the limit
 
-TODO Explain async/defer behaviour, or if js at the end
+TODO Explain options definition if async
 
 ### Browser support
 
