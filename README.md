@@ -59,8 +59,8 @@ The placeholder image should be the same for all your lazily loaded images, so t
 only loads one copy to display in all of them.
 
 You need to use CSS, or `width` and `height` attributes, to define fixed sizes for all the lazy
-images. This is so that the browser reserves the correct space for them ahead of time. Failure
-to do this causes 2 problems:
+images. This is so that the browser reserves the correct space for them in the page ahead of time.
+Failure to do this causes 2 problems:
 
 1) A really bad user experience, as the browser has to layout the web page again every time
    an image arrives, causing everything to jump around  
@@ -132,10 +132,10 @@ You can define any or all of the following attributes in `ImageDefer.options`:
 * `onImageUnloaded` (default none) - a callback function for the _image unloaded_ event, see _Events_ above.
 * `scrollingStopMillis` (default 500) - the time to wait, in milliseconds, before considering that a scrolling
   event has completed. Images are lazy loaded when scrolling stops.
-* `scrollingSkipRate` (default 1.0) - the speed of scrolling, in pixels/millisecond, above which images will
-  not be lazy loaded. Reducing this value, e.g. to `0.5`, means that lazy loading will not take place while
-  the user is scrolling relatively slowly. Raising it, e.g. to `2.0`, means that images will be lazy loaded
-  even while the user is scrolling quickly.
+* `scrollingSkipRate` (default 0.8) - the speed of scrolling, in pixels/millisecond, above which images will
+  not be lazy loaded. Reducing this value, e.g. to `0.2`, means that lazy loading will not take place while
+  the user is scrolling quite slowly. Raising it, e.g. to `1.5`, means that images will still be lazy loaded
+  even when the user is scrolling quickly.
 
 It does not matter whether you define `ImageDefer.options` before or after including `image-defer.js` in the
 page. But if you define it before, or if you use the `defer` or `async` attributes in your `script` tag, then

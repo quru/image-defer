@@ -34,7 +34,7 @@ var ImageDefer = ImageDefer || {};
 
 (function (options) {
 
-    this.version = '0.1';
+    this.version = '0.2';
 
     // Public options - apply or set defaults (define ImageDefer.options externally to apply them here)
     this.options = {
@@ -43,7 +43,7 @@ var ImageDefer = ImageDefer || {};
         onImageLoaded: options.onImageLoaded || null,
         onImageUnloaded: options.onImageUnloaded || null,
         scrollingStopMillis: options.scrollingStopMillis || 500,
-        scrollingSkipRate: 1.0
+        scrollingSkipRate: options.scrollingSkipRate || 0.8
     };
 
     // Private internal state
