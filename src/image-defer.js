@@ -24,9 +24,6 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/
  */
 
-// TODO Support srcset, picture element?
-// TODO chrome memory profiler shows allocations when scrolling - investigate
-
 "use strict";
 
 var ImageDefer = ImageDefer || {};

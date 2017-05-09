@@ -7,13 +7,14 @@ Lazily loading images has these up-sides:
 * Reduced server load, server bandwidth, and client-side bandwidth, by not loading images that the user never sees
 * Flatter server load, by not requesting all images at once
 * Faster loading web pages
-* Reduced (and also capped) client-side memory usage
+* Reduced client-side memory usage - initially at least
+* Capped client-side memory usage - with `ImageDefer.options.maxLoaded`
 
 and these down-sides:
 
 * Requires a little extra CPU power when the user scrolls the web page
+* You need to know the image dimensions in advance (use fixed sizes so that the page does not jump around as images load)
 * The user may have to wait a short time for images to load when they come into view
-* You need to know your image sizes in advance (use fixed sizes so that the page does not jump around as images load)
 * The user needs to have JavaScript enabled to view the images
 
 This library was developed for, and is bundled with, the [Quru Image Server](https://github.com/quru/qis), but functions perfectly well on its own, for use with either static or dynamic images.
@@ -118,7 +119,7 @@ The library emits up to 3 events for each image it finds with a `data-defer-src`
   (from the remote server or from cache) and has been displayed.
 
 * `onImageUnloaded` - called when the `ImageDefer.options.maxLoaded` limit has been exceeded,
-  for images that have been "unloaded" by setting them back to their initial placeholder image.
+  for images that have been "unloaded" by setting them back to the initial placeholder.
 
 You can subscribe to these events by supplying callback functions in `ImageDefer.options`
 (see _Available options_ below). Each callback requires the following prototype:
@@ -136,7 +137,9 @@ You can define any or all of the following attributes in `ImageDefer.options`:
 
 * `maxLoaded` (default 100) - the maximum number of images to lazy load before starting to unload images again.
   This prevents the memory use of the web page from becoming too high. Images will only be unloaded when they
-  are off-screen; if the number of visible images exceeds the limit then the limit will be breached.
+  are off-screen, so if the number of visible images exceeds the limit then the limit will be breached.
+  :warning: A common browser bug currently affects the way that image-defer implements this function,
+  causing the memory use of the page to continue growing in some browsers :cry: See issue #2 for more details.
 
 * `onImageRequested` (default none) - a callback function for the _image requested_ event, see _Runtime events_ above.
 
