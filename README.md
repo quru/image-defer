@@ -137,7 +137,7 @@ You can define any or all of the following attributes in `ImageDefer.options`:
 
 * `maxLoaded` (default 100) - the maximum number of images to lazy load before starting to unload images again.
   This prevents the memory use of the web page from becoming too high. Images will only be unloaded when they
-  are off-screen, so if the number of visible images exceeds the limit then the limit will be breached.
+  are off-screen, so if the number of visible images exceeds the limit then the limit will be breached.  
   :warning: A common browser bug currently affects the way that image-defer implements this function,
   causing the memory use of the page to continue growing in some browsers :cry: See issue #2 for more details.
 
