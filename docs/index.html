@@ -49,7 +49,8 @@
     <script type="text/javascript" src="https://rawgit.com/quru/image-defer/master/src/image-defer.js" defer></script>
 
     <script type="text/javascript">
-        var ImageDefer = ImageDefer || {};  // Only required when using async or defer
+        // Pre-define ImageDefer when using 'async' or 'defer' with <script>
+        window.ImageDefer = window.ImageDefer || {};
 
         // Set the image-defer options
         ImageDefer.options = {

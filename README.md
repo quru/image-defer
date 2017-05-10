@@ -38,8 +38,8 @@ First include the image-defer script in your web page HTML:
     <script type="text/javascript" src="//your.server/path/to/image-defer.min.js" defer></script>
 
 The script has no dependencies so you can use the `async` script tag attribute if you wish.
-It does not run until the DOM is complete, so you can also use the `defer` script tag attribute
-(unrelated to image-defer), as in the example above. See
+It does not need to run until the DOM is complete, so you can also use the `defer` script tag
+attribute (unrelated to image-defer), as in the example above. See
 [MDN](https://developer.mozilla.org/en/docs/Web/HTML/Element/script) for more information about
 these options.
 
@@ -79,8 +79,9 @@ different image sizes.
 
 ### Running
 
-The library initialises and runs automatically as soon as the web page has loaded. If it works
-and you are happy with the defaults then there is nothing else to do, but if not then read on.
+The library initialises and runs automatically as soon as the web page has loaded, during the
+page's `DOMContentLoaded` event. If it works and you are happy with the defaults then there is
+nothing else to do, but if not then read on.
 
 In order to remain fast even for very large web pages, the library breaks down the web page into
 horizontal bands, and then deals only with the currently visible bands. What this means in
@@ -155,16 +156,23 @@ You can define any or all of the following attributes in `ImageDefer.options`:
   the user is scrolling quite slowly. Raising it, e.g. to `1.5`, means that images will still be lazy loaded
   even when the user is scrolling quickly.
 
-It does not matter whether you define `ImageDefer.options` before or after including `image-defer.js` in the
-page. But if you define it before, or if you use the `defer` or `async` attributes in your `script` tag, then
-you require an additional line of code to ensure that the `ImageDefer` object exists first:
+You can define `ImageDefer.options` before or after including `image-defer.js` in the page, but if image-defer
+loads first then your code needs to alter the existing options object rather than replacing it with a new one.
 
-    var ImageDefer = ImageDefer || {};  // This line is required if image-defer.js might not yet be loaded
+Setting options before image-defer has loaded:
+
+    // Pre-define image-defer if it has not yet loaded
+    window.ImageDefer = window.ImageDefer || {};
     
     ImageDefer.options = {
         maxLoaded: 50,
         scrollingSkipRate: 0.5
     };
+
+Setting options after image-defer has loaded:
+
+    ImageDefer.options.maxLoaded = 50;
+    ImageDefer.options.scrollingSkipRate = 0.5;
 
 ### Available functions
 
